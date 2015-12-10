@@ -2,7 +2,7 @@
 
 This is the refactored version of older NBAGO
 
-[Github hosting URL](http://tangcongyuan.github.io/New_NBAGo/index.html)
+[Github hosting URL](http://tangcongyuan.github.io/NewNBAGo/index.html)
 
 Useful commands:
 

@@ -9,15 +9,15 @@ function clearShootingChart()
 	shootingChartDiv.select(".shootingchart").remove();
 }
 
-function shootingChart(start, end)
+function shootingChart(d)
 {
 	clearShootingChart();
-	
+	//console.log("there")
+	console.log(d);
 	shootsvg = shootingChartDiv.append("svg")	
 					.attr("width", courtimgwidth)
 					.attr("height", courtimgheight)
 					.attr("class", "shootingchart")
-					
 			
 	shc_xscale = d3.scale.linear()
 					.domain([0, coordinateX])
@@ -26,39 +26,20 @@ function shootingChart(start, end)
 	shc_yscale = d3.scale.linear()
 					.domain([0, coordinateY])
 					.range([0, courtimgwidth]);	
-	var sgames = [];
-	
-	var name;
-	
-	var xrealcount;
-	
-	var tasks = [];
-
-	var q = queue(1);
-	var curDate
-	var filename
-	
-	for(i = start; i <= end; i++)
-	{
-		 curDate = changeFormat(gamesOfSelectedTeam[i].Date);
-		 filename = "datasets/2009-2010.regular_season/" + curDate + "." + teamAbbreviation[gamesOfSelectedTeam[i].Visitor]
-					+ teamAbbreviation[gamesOfSelectedTeam[i].Home] + ".csv";
-		q.defer(d3.csv,filename);
-	}
-	q.await(addShootingPoints);
+	addShootingPoints(d);
 }
 
-function addShootingPoints(err)
+function addShootingPoints(arguments)
 {
-	 if(err) return;
-	 
+	 //if(err) return;
+	 console.log(arguments);
 	 var d = new Array();
+	 
 	 for (var i=1; i<arguments.length; i++)
 	 {
 		 Array.prototype.push.apply(d , arguments[i]);
-		// d = arguments[i];
 	}
-		var curDate;
+	var curDate;
 		var shotgroup;
 		
 			d.forEach(function(d)
@@ -84,16 +65,24 @@ function addShootingPoints(err)
 							if(d.team == "PHX") return 1;
 							else if(d.team == "LAL") return 0;
 						})
+	/*
+	shootingChartDiv.selectAll("p")
+					.data(d)
+					.enter()
+					.append("p")
+						.text(function(d, i) {return "this  No. " + i + "  " + d.team + " and " + d.team ;})
+	*/
+
 }
 
-function drawshootchart()
+function drawshootchart(d)
 {
-	dispatch.on("change.drawshootchart", function(srartIndex, stopIndex) {
+	dispatch.on("change.drawshootchart", function(d) {
 //				console.log("drawshootchart");
 //				console.log(gamesOfSelectedTeam);
 //				console.log(gamesOfSelectedTeam[srartIndex]);
 //				console.log(gamesOfSelectedTeam[stopIndex]);
-			shootingChart(srartIndex,stopIndex);
+			shootingChart(d);
 
 	 });
 }

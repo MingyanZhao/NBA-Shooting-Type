@@ -193,7 +193,7 @@ function drawtreemap()
 		//console.log(gamesOfSelectedTeam);
 		//console.log(gamesOfSelectedTeam[srartIndex]);
 		//console.log(gamesOfSelectedTeam[stopIndex]);
-		//buildTreeMap(srartIndex,stopIndex);
+		buildTreeMap(srartIndex,stopIndex);
 
 	});
 }
@@ -226,6 +226,7 @@ function otherChart()
 function clearTreeMap()
 {
 	treeMapDiv.select(".treemap").remove();
+	d3.select(".mydiv").remove();
 }
 
 function buildTreeMap(start, end)
@@ -234,12 +235,6 @@ function buildTreeMap(start, end)
 
 	var currentTeamPoints = [];
 	var currentTeamPointsObj = {};
-
-	var treemapSvg = treeMapDiv.append("svg")
-			.attr("width", courtimgwidth)
-			.attr("height", courtimgheight)
-			.attr("class", "treemap")
-
 
 	var xscale = d3.scale.linear()
 			.domain([0, coordinateX])
@@ -251,179 +246,105 @@ function buildTreeMap(start, end)
 
 	var shotgroup;
 
-	var q = queue();
+	var q = queue(1);
+	var curDate;
+	var filename;
 
 	for(i = start; i <= end; i++)
 	{
-		var curDate = changeFormat(gamesOfSelectedTeam[i].Date);
-		//console.log(curDate)
-		//console.log(teamAbbreviation)
-		
-		d3.csv("datasets/2009-2010.regular_season/" + curDate + "." + teamAbbreviation[gamesOfSelectedTeam[i].Visitor]
-				+ teamAbbreviation[gamesOfSelectedTeam[i].Home] + ".csv", function(err, d) {
-			if(err) console.log(err);
-
-			d.forEach(function(d) {
-				d.x = +d.x;
-				d.y = +d.y;
-
-				if(d.team == currentTeam) {
-					if(d.result == "made") {
-
-						d.num = +d.num;
-						d.points = +d.points;
-
-						if(!currentTeamPoints[d.player] ) {
-							currentTeamPoints[d.player] = 0;
-						}
-						if(!currentTeamPointsObj.hasOwnProperty(d.player)) {
-							currentTeamPointsObj[d.player] = 0;
-						}
-						if(d.num){
-							 currentTeamPoints[d.player] = +currentTeamPoints[d.player] + d.num;
-							 currentTeamPointsObj[d.player]=  +currentTeamPoints[d.player] + d.num;
-						 }
-						else if(d.points) {
-							currentTeamPoints[d.player] = +currentTeamPoints[d.player] + d.points;
-							currentTeamPointsObj[d.player] = +currentTeamPoints[d.player] + d.points;
-						}
-					}
-				}
-			});
-			//console.log(currentTeamPoints)
-			//console.log(currentTeamPointsObj)
-
-			var pointsLength = Object.keys(currentTeamPoints).length;
-			var totalPoints = 0;
-			var index = 0;
-			var dataArray = new Array();
-			for (var i in currentTeamPoints) {
-				totalPoints += currentTeamPoints[i];
-				dataArray[index++] = +currentTeamPoints[i];
-			}
-
-			var root = {};
-			root.name = "Data";
-			root.children = [];
-
-			var i = 0;
-			for (var player in currentTeamPoints) {
-				root.children[i] = new Object();
-				root.children[i].name = player;
-				root.children[i].value = currentTeamPoints[player];
-
-				i++;
-			}
-
-			var treemap = d3.layout.treemap()
-					.size([500, 500])
-
-			var nodes = treemap.nodes(root);
-			var links = treemap.links(nodes);
-
-			//console.log(root)
-			//console.log(dataArray)
-			//console.log(nodes)
-			//console.log(links)
-
-			var treemapTrailGroup =	treemapSvg.selectAll("g")
-					.data(dataArray)
-					.enter()
-					.append("g")
-
-			color = d3.scale.category20c();
-			treemapTrailGroup
-					.append("rect")
-					.attr("width",  function(d,i) { return nodes[i + 1].dx})
-					.attr("height", function(d,i) { return nodes[i + 1].dy})
-					.attr("transform", function (d, i) {return "translate(" + (nodes[i + 1].x) +"," + (nodes[i + 1].y) + ")"})
-					.style("fill", function(d, i) { console.log(d); return color(nodes[i + 1].name);})
-					.style("stroke", "black")
-					.style("stroke-width", "2px")
-
-			treemapTrailGroup.append("text")
-					.attr("x", function(d,i) { return nodes[i + 1].x })
-					.attr("y", function(d,i) { return nodes[i + 1].y + 30})
-					.attr("width", function(d,i) { return nodes[i + 1].dx / 2})
-					.text(function(d, i) {
-						return nodes[i + 1].name + '(' + nodes[i + 1].value + ')';
-					});
-
-			// two functions that may work to have word wrap... work in progress
-			function fontSize(d,i) {
-				var size = d.dx/5;
-				var words = nodes[i + 1].name.split(' ');
-				var word = words[0];
-				var width = nodes[i + 1].dx;
-				var height = nodes[i + 1].dy;
-				var length = 0;
-				d3.select(this).style("font-size", size + "px").text(word);
-				while(((this.getBBox().width >= width) || (this.getBBox().height >= height)) && (size > 12))
-				{
-					size--;
-					d3.select(this).style("font-size", size + "px");
-					this.firstChild.data = word;
-				}
-			}
-
-			function wordWrap(d, i){
-				var words = nodes[i + 1].name.split(' ');
-				var line = new Array();
-				var length = 0;
-				var text = "";
-				var width = nodes[i + 1].dx;
-				var height = nodes[i + 1].dy;
-				var word;
-				do {
-					word = words.shift();
-					line.push(word);
-					if (words.length)
-						this.firstChild.data = line.join(' ') + " " + words[0];
-					else
-						this.firstChild.data = line.join(' ');
-					length = this.getBBox().width;
-					if (length < width && words.length) {
-						;
-					}
-					else {
-						text = line.join(' ');
-						this.firstChild.data = text;
-						if (this.getBBox().width > width) {
-							text = d3.select(this).select(function() {return this.lastChild;}).text();
-							text = text + "...";
-							d3.select(this).select(function() {return this.lastChild;}).text(text);
-							d3.select(this).classed("wordwrapped", true);
-							break;
-						}
-						else
-							;
-
-						if (text != '') {
-							d3.select(this).append("svg:tspan")
-									.attr("x", 0)
-									.attr("dx", "0.15em")
-									.attr("dy", "0.9em")
-									.text(text);
-						}
-						else
-							;
-
-						if(this.getBBox().height > height && words.length) {
-							text = d3.select(this).select(function() {return this.lastChild;}).text();
-							text = text + "...";
-							d3.select(this).select(function() {return this.lastChild;}).text(text);
-							d3.select(this).classed("wordwrapped", true);
-
-							break;
-						}
-						else
-							;
-
-						line = new Array();
-					}
-				} while (words.length);
-				this.firstChild.data = '';
-			}
-		})
+		curDate = changeFormat(gamesOfSelectedTeam[i].Date);
+		filename = "datasets/2009-2010.regular_season/" + curDate + "." + teamAbbreviation[gamesOfSelectedTeam[i].Visitor]
+				+ teamAbbreviation[gamesOfSelectedTeam[i].Home] + ".csv";
+		q.defer(d3.csv,filename);
 	}
+	q.await(createPieVis);
 }
+
+
+
+function createPieVis(err) {
+	if (err) return;
+	var d = new Array();
+//		console.log(arguments)
+	for (var i=1; i<arguments.length; i++)
+	{
+		Array.prototype.push.apply(d , arguments[i]);
+		// d = arguments[i];
+	}
+//		console.log(d);
+	var currentTeamPoints = [];
+	d.forEach(function(d) {
+		if(d.team == currentTeam) {
+			if(d.result == "made") {
+				d.num = +d.num;
+				d.points = +d.points;
+				if(!currentTeamPoints[d.player] ) {
+					currentTeamPoints[d.player] = 0;
+				}
+				if(d.num){
+					currentTeamPoints[d.player] = +currentTeamPoints[d.player] + d.num;
+				}
+				else if(d.points) {
+					currentTeamPoints[d.player] = +currentTeamPoints[d.player] + d.points;
+				}
+			}
+		}
+	});
+	console.log(currentTeamPoints)
+	var pointsLength = Object.keys(currentTeamPoints).length;
+	var totalPoints = 0;
+	var index = 0;
+	var dataArray = new Array();
+	for (var i in currentTeamPoints) {
+		totalPoints += currentTeamPoints[i];
+		dataArray[index++] = +currentTeamPoints[i];
+	}
+	var root = {};
+	root.name = "Data";
+	root.children = [];
+	var i = 0;
+	for (var player in currentTeamPoints) {
+		root.children[i] = new Object();
+		root.children[i].name = player;
+		root.children[i].value = currentTeamPoints[player];
+		i++;
+	}
+	var data = [];
+	var i = 0;
+	for (var player in currentTeamPoints) {
+		data.push(new Object());
+		data[i].name = player;
+		data[i].value = currentTeamPoints[player];
+		i++;
+	}
+	console.log(data)
+	buildPie(data);
+	var accuracy = [];
+	for (var i=1; i<arguments.length; i++)
+	{
+		accuracy[i - 1] = {date: i, made: 0, missed: 0};
+		arguments[i].forEach(function(d) {
+//				console.log(d)
+			if(d.team == currentTeam) {
+//					if(!accuracy[i].made ) {
+//						accuracy[i].made = 0;
+//					}
+//
+//					if(!accuracy[i].missed ) {
+//						accuracy[i].missed = 0;
+//					}
+				if(d.result == "made") {
+					accuracy[i - 1].made += 1;
+				}
+				if(d.result == "missed") {
+					accuracy[i - 1].missed += 1;
+				}
+			}
+		});
+		// d = arguments[i];
+	}
+	//console.log(accuracy)
+	buildLineChart(accuracy);
+}
+
+

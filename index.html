@@ -29,6 +29,42 @@
 .resize rect{
 	visibility: visible;
 }
+<!-- Adam's css -->
+.label-text {
+	alignment-baseline: middle;
+	font-size: 12px;
+	font-family: arial, helvetica, "sans-serif";
+	fill: #393939;
+}
+.label-line {
+	stroke-width: 1;
+	stroke: #393939;
+}
+.label-circle {
+	fill: #393939;
+}
+path.slice{
+    stroke-width:2px;
+}
+polyline{
+    opacity: .3;
+    stroke: black;
+    stroke-width: 2px;
+    fill: none;
+}
+/* line chart css*/
+path {
+	stroke: steelblue;
+	stroke-width: 2;
+	fill: none;
+}
+.axis path,
+.axis line {
+	fill: none;
+	stroke: grey;
+	stroke-width: 1;
+	shape-rendering: crispEdges;
+}
 
 </style>
 <head>
@@ -77,5 +113,7 @@
 <script src="js/PlotTeamLogos.js"></script>
 <script src="js/PlotBarchart.js"></script>
 <script src="js/PlotShootingChart.js"></script>
+<script src="js/pie.js"></script>
+<script src="js/linechart.js"></script>
 <script src="js/NBAGo.js"></script>
 </body>

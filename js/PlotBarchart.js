@@ -3,6 +3,11 @@ var yscale = d3.scale.linear()
 var brush = d3.svg.brush().x(xscale)
 		.on("brush", brushmove)
 		.on("brushend", brushend);
+
+var q = queue(1);
+var curDate
+var filename
+
 //brush.extent([0.4, 0.6]);
 
 function resetBrush() {
@@ -42,18 +47,27 @@ function brushend() {
 	d3.selectAll(".PointsGotbar").style("opacity", function(d, i) {
 	  return i >= curGameStart && i <= curGameEnd || brush.empty() ? "1" : ".4";
 	});
-
 	d3.selectAll(".PointsLossbar").style("opacity", function(d, i) {
 	  return i >= curGameStart && i <= curGameEnd || brush.empty() ? "1" : ".4";
 	});
-  // Additional calculations happen here...
-  // filterPoints();
-  // colorPoints();
-  // styleOpacity();
-  
+	  	  
 	//selectedGamesDim = transitCrossfilter.dimension(function(d){ if(d.filename)return d.filename;});
-	dispatch.change(curGameStart, curGameEnd);
-	
+	for(i = curGameStart; i <= curGameEnd; i++)
+	{
+		curDate = changeFormat(gamesOfSelectedTeam[i].Date);
+		filename = "datasets/2009-2010.regular_season/" + curDate + "." + teamAbbreviation[gamesOfSelectedTeam[i].Visitor]
+					+ teamAbbreviation[gamesOfSelectedTeam[i].Home] + ".csv";
+		q.defer(d3.csv,filename);
+	}
+	q.await(updateVis);
+}
+
+function updateVis()
+{
+	//console.log(arguments);
+	var d = arguments;
+	dispatch.change(d);
+
 }
 
 function clearBarChartSvg()

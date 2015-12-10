@@ -1,6 +1,6 @@
 function drawTeamLogos()
 {
-	d3.csv("../static/main/datasets/usamap/arenaCoordinates.csv", function(err, d){
+	d3.csv("datasets/usamap/arenaCoordinates.csv", function(err, d){
 		var coordinates = [];
 
 		d.forEach(function(d, i)
@@ -15,7 +15,7 @@ function drawTeamLogos()
 		tip.attr('class', 'd3-tip')
 		.offset([-10, 0])
 		.html(function(d) {
-			return "<img src=\"../static/main/img/" + d.T +".svg\" height=\"100\"></img>" 
+			return "<img src=\"img/" + d.T +".svg\" height=\"100\"></img>" 
 			+ "<p><strong>"+ d.Team +"</strong> <span style='color:red'></p>"
 			+ "<p><strong>Offensive Rating:</strong> <span style='color:red'>" + d.ORtg + "</span></p>"
 			+ "<p><strong>Deffensive Rating:</strong> <span style='color:red'>" + d.DRtg + "</span></p>"
@@ -42,7 +42,7 @@ function drawTeamLogos()
 		
 		catpattern.append("image")
 						.attr("id", function(d){ return "logoid_" + d.T})
-						.attr("xlink:href",function(d,i){return "../static/main/img/" +  d.T + ".svg"} )
+						.attr("xlink:href",function(d,i){return "img/" +  d.T + ".svg"} )
 						.attr("x", 0)
 						.attr("y", 0)
 						.attr("width",teamLogoWidth)

@@ -1,10 +1,9 @@
 <!doctype html>
-{% load staticfiles %}
 <html>
 
 <style>
 .shootingchart{
-	background:url("{% static 'main/img/nbahalfcourt.jpg' %}")
+	background:url("img/nbahalfcourt.jpg")
 }
 
 .land {
@@ -39,16 +38,16 @@
 	<meta charset = "utf-8">
 	<meta name="viewport" content = "width=device-width, initial-scale=1.0">
 	<title> NBA GO </title>
-	<link href="{% static 'main/css/bootstrap.min.css' %}" rel="stylesheet">
-	<link href="{% static 'main/css/font-awesome.css' %}" rel="stylesheet" type="text/css">
-	<link href="{% static 'main/css/main.css' %}" rel="stylesheet" type="text/scc">
+	<link href="css/bootstrap.min.css" rel="stylesheet">
+	<link href="css/font-awesome.css" rel="stylesheet" type="text/css">
+	<link href="css/main.css" rel="stylesheet" type="text/scc">
 
 </head>
 
 <body>
 	<div class="container">
 		<div class="col-md-1">
-			<img src="{% static 'main/img/NBA_logo.png' %}" height="80">
+			<img src="img/NBA_logo.png" height="80">
 		</div>
 		
 		<div class="col-md-10">
@@ -68,15 +67,15 @@
 <script src="//d3js.org/d3.v3.min.js"></script>
 <script src="//d3js.org/topojson.v1.min.js"></script>	
 <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js" charset="utf-8"></script>
-<script src="{% static 'main/js/jquery.js' %}"></script>
-<script src="{% static 'main/js/bootstrap.min.js' %}"></script>
+<script src="js/jquery.js"></script>
+<script src="js/bootstrap.min.js"></script>
 <script src="http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/queue-async/1.0.7/queue.min.js"></script>
 <script type="text/javascript" src="https://rawgithub.com/NickQiZhu/dc.js/master/web/js/crossfilter.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/queue-async/1.0.7/queue.min.js"></script>
-<script src="{% static 'main/js/PlotUSA.js' %}"></script>
-<script src="{% static 'main/js/PlotTeamLogos.js' %}"></script>
-<script src="{% static 'main/js/PlotBarchart.js' %}"></script>
-<script src="{% static 'main/js/PlotShootingChart.js' %}"></script>
-<script src="{% static 'main/js/NBAGo.js' %}"></script>
+<script src="js/PlotUSA.js"></script>
+<script src="js/PlotTeamLogos.js"></script>
+<script src="js/PlotBarchart.js"></script>
+<script src="js/PlotShootingChart.js"></script>
+<script src="js/NBAGo.js"></script>
 </body>

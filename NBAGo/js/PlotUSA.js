@@ -1,5 +1,5 @@
 function startPage(){
-	d3.json("../static/main/datasets/usamap/usamap.json", function(error, us) {
+	d3.json("datasets/usamap/usamap.json", function(error, us) {
 		usaMapSvg.insert("path", ".graticule")
 		  .datum(topojson.feature(us, us.objects.land))
 		  .attr("class", "land")

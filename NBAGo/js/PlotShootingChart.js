@@ -41,7 +41,7 @@ function shootingChart(start, end)
 	for(i = start; i <= end; i++)
 	{
 		 curDate = changeFormat(gamesOfSelectedTeam[i].Date);
-		 filename = "../static/main/datasets/2009-2010.regular_season/" + curDate + "." + teamAbbreviation[gamesOfSelectedTeam[i].Visitor]
+		 filename = "datasets/2009-2010.regular_season/" + curDate + "." + teamAbbreviation[gamesOfSelectedTeam[i].Visitor]
 					+ teamAbbreviation[gamesOfSelectedTeam[i].Home] + ".csv";
 		q.defer(d3.csv,filename);
 	}

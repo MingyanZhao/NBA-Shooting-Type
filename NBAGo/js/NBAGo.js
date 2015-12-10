@@ -92,7 +92,7 @@ function chooseTeam(selectedteam, season, startdate, enddate)
 	var date;
 	
 	
-	d3.csv("../static/main/datasets/2009-2010.regular_season/result20092010.csv", function(err, d){
+	d3.csv("datasets/2009-2010.regular_season/result20092010.csv", function(err, d){
 		gamesOfSelectedTeam = [];
 		d.forEach(function(d, i)
 		{
@@ -259,7 +259,7 @@ function buildTreeMap(start, end)
 		//console.log(curDate)
 		//console.log(teamAbbreviation)
 		
-		d3.csv("../static/main/datasets/2009-2010.regular_season/" + curDate + "." + teamAbbreviation[gamesOfSelectedTeam[i].Visitor]
+		d3.csv("datasets/2009-2010.regular_season/" + curDate + "." + teamAbbreviation[gamesOfSelectedTeam[i].Visitor]
 				+ teamAbbreviation[gamesOfSelectedTeam[i].Home] + ".csv", function(err, d) {
 			if(err) console.log(err);
 

@@ -116,7 +116,6 @@ function chooseTeam(selectedteam, season, startdate, enddate)
 
 function changeFormat(date)
 {
-	//console.log(date);
 	var mon;
 	switch(date.substring(4,7))
 	{
@@ -145,7 +144,6 @@ function changeFormat(date)
 	
 	var day = date.length == 14 ? ("0" +date.charAt(8)) : date.substring(8,10);
 	var year = date.length == 14 ? date.substring(10,14) : date.substring(11,15);
-	//console.log(year+mon+day); 
 	return year+mon+day;
 	
 }
@@ -189,22 +187,13 @@ function checkDateInterval(startdate, enddate, checkingDate)
 function drawPieAndLineCharts()
 {
 	dispatch.on("change.drawPieAndLineCharts", function(d) {
-		//console.log("drawtreemap");
-		//console.log(gamesOfSelectedTeam);
-		//console.log(gamesOfSelectedTeam[srartIndex]);
-		//console.log(gamesOfSelectedTeam[stopIndex]);
 		drawPieAndLineCharts(d);
-
 	});
 }
 
 function slopChart()
 {
 	dispatch.on("change.slopChart", function(srartIndex, stopIndex) {
-//				console.log("slopChart");
-//				console.log(gamesOfSelectedTeam);
-//				console.log(gamesOfSelectedTeam[srartIndex]);
-//				console.log(gamesOfSelectedTeam[stopIndex]);
 
 	 });
 }
@@ -213,10 +202,6 @@ function slopChart()
 function otherChart()
 {
 	dispatch.on("change.otherChart", function(srartIndex, stopIndex) {
-//				console.log("otherChart");
-//				console.log(gamesOfSelectedTeam);
-//				console.log(gamesOfSelectedTeam[srartIndex]);
-//				console.log(gamesOfSelectedTeam[stopIndex]);
 
 	 });
 }
@@ -233,10 +218,10 @@ function drawPieAndLineCharts(arguments) {
 	clearPieChart();
 
 	var d = new Array();
+
 	for (var i=1; i<arguments.length; i++) {
 		Array.prototype.push.apply(d , arguments[i]);
 	}
-
 	var currentTeamPoints = [];
 	d.forEach(function(d) {
 		if(d.team == currentTeam) {
@@ -255,6 +240,7 @@ function drawPieAndLineCharts(arguments) {
 			}
 		}
 	});
+	var pointsLength = Object.keys(currentTeamPoints).length;
 	var totalPoints = 0;
 	for (var i in currentTeamPoints) {
 		totalPoints += currentTeamPoints[i];
@@ -281,6 +267,7 @@ function drawPieAndLineCharts(arguments) {
 	if(data.length > 1) {
 		buildPie(data);
 	}
+	//buildPie(data);
 	var accuracy = [];
 	for (var i=1; i<arguments.length; i++)
 	{
@@ -304,7 +291,6 @@ function drawPieAndLineCharts(arguments) {
 			}
 		});
 	}
-
 	buildLineChart(accuracy, currentTeam);
 }
 

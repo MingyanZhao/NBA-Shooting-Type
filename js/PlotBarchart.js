@@ -42,7 +42,6 @@ function brushend() {
 	var brushy = d3.scale.linear().domain(xscale.range()).range(xscale.domain());
 	var curGameStart = (brush.empty()) ? 0 : Math.ceil(brushy(b[0])),
 	  curGameEnd = (brush.empty()) ? 0 : Math.floor(brushy(b[1]));
-	//console.log(curGameStart + " to " + curGameEnd);
 	
 	d3.selectAll(".PointsGotbar").style("opacity", function(d, i) {
 	  return i >= curGameStart && i <= curGameEnd || brush.empty() ? "1" : ".4";
@@ -64,7 +63,6 @@ function brushend() {
 
 function updateVis()
 {
-	//console.log(arguments);
 	var d = arguments;
 	dispatch.change(d);
 
@@ -72,7 +70,6 @@ function updateVis()
 
 function clearBarChartSvg()
 {
-//		console.log("clear");
 	gameBarChartSvg.selectAll("rect").remove();
 	gameBarChartSvg.selectAll("g").remove();
 	
@@ -86,7 +83,6 @@ function drawBarChart(select, games)
 	var xpositions = new Array;
 	var minPnt = 120;
 	var maxPnt = 80;
-//		console.log(games.length);
 	games.forEach(function (d, i){ 
 		d.PTSHome = +d.PTSHome;
 		d.PTSVisitor = +d.PTSVisitor;

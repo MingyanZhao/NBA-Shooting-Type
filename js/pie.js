@@ -1,5 +1,6 @@
 function buildPie(data) {
-    clearTreeMap();
+    clearPieChart();
+
     var svg = d3.select("body")
         .append("div")
         .attr("class", "mydiv")
@@ -45,7 +46,7 @@ function buildPie(data) {
         return d.data.name;
     };
 
-    var color =  d3.scale.category20c() //d3.scale.ordinal()
+    var color = d3.scale.category20c() //d3.scale.ordinal()
     //    .domain(["Lorem ipsum", "dolor sit", "amet", "consectetur", "adipisicing", "elit", "sed", "do", "eiusmod", "tempor", "incididunt"])
     //    .range(["#98abc5", "#8a89a6", "#7b6888", "#6b486b", "#a05d56", "#d0743c", "#ff8c00"]);
 
@@ -65,8 +66,6 @@ function buildPie(data) {
 
 
     function change(data) {
-        console.log(data)
-
         /* ------- PIE SLICES -------*/
         var slice = svg.select(".slices").selectAll("path.slice")
             .data(pie(data), key);

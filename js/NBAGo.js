@@ -77,7 +77,7 @@ var selectedGamesDim;
 dispatch.on("start.startpage", startPage);
 dispatch.on("chooseTeam", chooseTeam);
 dispatch.on("change.drawshootchart", drawshootchart);
-dispatch.on("change.drawtreemap", drawtreemap);
+dispatch.on("change.drawPieAndLineCharts", drawPieAndLineCharts);
 dispatch.on("change.slopChart", slopChart);
 dispatch.on("change.otherChart", otherChart);
 dispatch.start();
@@ -116,7 +116,6 @@ function chooseTeam(selectedteam, season, startdate, enddate)
 
 function changeFormat(date)
 {
-	//console.log(date);
 	var mon;
 	switch(date.substring(4,7))
 	{
@@ -145,7 +144,6 @@ function changeFormat(date)
 	
 	var day = date.length == 14 ? ("0" +date.charAt(8)) : date.substring(8,10);
 	var year = date.length == 14 ? date.substring(10,14) : date.substring(11,15);
-	//console.log(year+mon+day); 
 	return year+mon+day;
 	
 }
@@ -186,25 +184,16 @@ function checkDateInterval(startdate, enddate, checkingDate)
 	return true;
 }
 
-function drawtreemap()
+function drawPieAndLineCharts()
 {
-	dispatch.on("change.drawtreemap", function(srartIndex, stopIndex) {
-		//console.log("drawtreemap");
-		//console.log(gamesOfSelectedTeam);
-		//console.log(gamesOfSelectedTeam[srartIndex]);
-		//console.log(gamesOfSelectedTeam[stopIndex]);
-		buildTreeMap(srartIndex,stopIndex);
-
+	dispatch.on("change.drawPieAndLineCharts", function(d) {
+		drawPieAndLineCharts(d);
 	});
 }
 
 function slopChart()
 {
 	dispatch.on("change.slopChart", function(srartIndex, stopIndex) {
-//				console.log("slopChart");
-//				console.log(gamesOfSelectedTeam);
-//				console.log(gamesOfSelectedTeam[srartIndex]);
-//				console.log(gamesOfSelectedTeam[stopIndex]);
 
 	 });
 }
@@ -213,65 +202,26 @@ function slopChart()
 function otherChart()
 {
 	dispatch.on("change.otherChart", function(srartIndex, stopIndex) {
-//				console.log("otherChart");
-//				console.log(gamesOfSelectedTeam);
-//				console.log(gamesOfSelectedTeam[srartIndex]);
-//				console.log(gamesOfSelectedTeam[stopIndex]);
 
 	 });
 }
 
 
 
-function clearTreeMap()
+function clearPieChart()
 {
 	treeMapDiv.select(".treemap").remove();
 	d3.select(".mydiv").remove();
 }
 
-function buildTreeMap(start, end)
-{
-	clearTreeMap();
+function drawPieAndLineCharts(arguments) {
+	clearPieChart();
 
-	var currentTeamPoints = [];
-	var currentTeamPointsObj = {};
-
-	var xscale = d3.scale.linear()
-			.domain([0, coordinateX])
-			.range([0, courtimgwidth]);
-
-	var yscale = d3.scale.linear()
-			.domain([0, coordinateY])
-			.range([0, courtimgwidth]);
-
-	var shotgroup;
-
-	var q = queue(1);
-	var curDate;
-	var filename;
-
-	for(i = start; i <= end; i++)
-	{
-		curDate = changeFormat(gamesOfSelectedTeam[i].Date);
-		filename = "datasets/2009-2010.regular_season/" + curDate + "." + teamAbbreviation[gamesOfSelectedTeam[i].Visitor]
-				+ teamAbbreviation[gamesOfSelectedTeam[i].Home] + ".csv";
-		q.defer(d3.csv,filename);
-	}
-	q.await(createPieVis);
-}
-
-
-
-function createPieVis(err) {
-	if (err) return;
 	var d = new Array();
-//		console.log(arguments)
-	for (var i=1; i<arguments.length; i++)
-	{
+
+	for (var i=1; i<arguments.length; i++) {
 		Array.prototype.push.apply(d , arguments[i]);
-		// d = arguments[i];
 	}
-//		console.log(d);
 	var currentTeamPoints = [];
 	d.forEach(function(d) {
 		if(d.team == currentTeam) {
@@ -290,61 +240,58 @@ function createPieVis(err) {
 			}
 		}
 	});
-	console.log(currentTeamPoints)
 	var pointsLength = Object.keys(currentTeamPoints).length;
 	var totalPoints = 0;
-	var index = 0;
-	var dataArray = new Array();
 	for (var i in currentTeamPoints) {
 		totalPoints += currentTeamPoints[i];
-		dataArray[index++] = +currentTeamPoints[i];
 	}
-	var root = {};
-	root.name = "Data";
-	root.children = [];
-	var i = 0;
-	for (var player in currentTeamPoints) {
-		root.children[i] = new Object();
-		root.children[i].name = player;
-		root.children[i].value = currentTeamPoints[player];
-		i++;
-	}
+
 	var data = [];
+	var bench = {name:"Bench", value: 0};
+
 	var i = 0;
 	for (var player in currentTeamPoints) {
-		data.push(new Object());
-		data[i].name = player;
-		data[i].value = currentTeamPoints[player];
-		i++;
+		if(currentTeamPoints[player] < totalPoints *.05) {
+			bench.value += currentTeamPoints[player];
+		}
+		else {
+			data.push(new Object());
+			data[i].name = player;
+			data[i].value = currentTeamPoints[player];
+			i++;
+		}
 	}
-	console.log(data)
-	buildPie(data);
+	data.push(bench);
+
+	// only build pie if data processing is complete, having more than just the Bench object in it
+	if(data.length > 1) {
+		buildPie(data);
+	}
+	//buildPie(data);
 	var accuracy = [];
 	for (var i=1; i<arguments.length; i++)
 	{
-		accuracy[i - 1] = {date: i, made: 0, missed: 0};
+		accuracy[i - 1] = {date: i, currentTeam_made: 0, currentTeam_missed: 0, opponents_made: 0, opponents_missed: 0};
 		arguments[i].forEach(function(d) {
-//				console.log(d)
 			if(d.team == currentTeam) {
-//					if(!accuracy[i].made ) {
-//						accuracy[i].made = 0;
-//					}
-//
-//					if(!accuracy[i].missed ) {
-//						accuracy[i].missed = 0;
-//					}
 				if(d.result == "made") {
-					accuracy[i - 1].made += 1;
+					accuracy[i - 1].currentTeam_made += 1;
 				}
 				if(d.result == "missed") {
-					accuracy[i - 1].missed += 1;
+					accuracy[i - 1].currentTeam_missed += 1;
+				}
+			}
+			else {
+				if(d.result == "made") {
+					accuracy[i - 1].opponents_made += 1;
+				}
+				if(d.result == "missed") {
+					accuracy[i - 1].opponents_missed += 1;
 				}
 			}
 		});
-		// d = arguments[i];
 	}
-	//console.log(accuracy)
-	buildLineChart(accuracy);
+	buildLineChart(accuracy, currentTeam);
 }
 
 

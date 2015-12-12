@@ -15,7 +15,6 @@ var rightDiv = containerDiv
 
 var downDiv = containerDiv.append("div")
 
-						
 var shootingChartDiv = d3.select("body")
 						.append("div")
 						.attr("class", "col-md-10 col-md-offset-3 shootchart")
@@ -34,7 +33,6 @@ var coordinateY = 47.2;
 var mapWidth = 960;
 var mapHeight = 500;
 
-
 var teamLogoWidth = 40;
 var teamLogoRaduis = teamLogoWidth / 2;
 var teamLogoHeight = teamLogoWidth;
@@ -42,7 +40,6 @@ var teamLogoHeight = teamLogoWidth;
 var usaMapSvg = mainDiv.append("svg")
 	.attr("width", mapWidth)
 	.attr("height", mapHeight)
-		
 		
 var tip = d3.tip()
 
@@ -74,11 +71,34 @@ var dispatch = d3.dispatch("start", "chooseTeam", "change");
 
 var selectedGamesDim;
 
+var shootingTypeDiv = d3.select("body")
+					.append("div")
+					.attr("class", "col-md-12")
+
+					
+var TypeMadeDiv = shootingTypeDiv
+					.append("div")
+					.attr("class", "col-md-10 col-md-offset-1")
+
+var TypeMissDiv = shootingTypeDiv
+					.append("div")
+					.attr("class", "col-md-10 col-md-offset-1")
+
+var TypeAccuracyDiv = shootingTypeDiv
+					.append("div")
+					.attr("class", "col-md-10 col-md-offset-1")
+
+var typeSelectSwitch = false;
+					
+var global_startGameIndex;
+var global_endGameIndex;
+
 dispatch.on("start.startpage", startPage);
 dispatch.on("chooseTeam", chooseTeam);
 dispatch.on("change.drawshootchart", drawshootchart);
 dispatch.on("change.drawPieAndLineCharts", drawPieAndLineCharts);
 dispatch.on("change.slopChart", slopChart);
+dispatch.on("change.drawShootingType", drawShootingType);
 dispatch.on("change.otherChart", otherChart);
 dispatch.start();
 //startPage();
@@ -116,6 +136,7 @@ function chooseTeam(selectedteam, season, startdate, enddate)
 
 function changeFormat(date)
 {
+	//console.log(date);
 	var mon;
 	switch(date.substring(4,7))
 	{
@@ -144,6 +165,7 @@ function changeFormat(date)
 	
 	var day = date.length == 14 ? ("0" +date.charAt(8)) : date.substring(8,10);
 	var year = date.length == 14 ? date.substring(10,14) : date.substring(11,15);
+	//console.log(year+mon+day); 
 	return year+mon+day;
 	
 }
@@ -194,6 +216,10 @@ function drawPieAndLineCharts()
 function slopChart()
 {
 	dispatch.on("change.slopChart", function(srartIndex, stopIndex) {
+//				console.log("slopChart");
+//				console.log(gamesOfSelectedTeam);
+//				console.log(gamesOfSelectedTeam[srartIndex]);
+//				console.log(gamesOfSelectedTeam[stopIndex]);
 
 	 });
 }
@@ -202,6 +228,10 @@ function slopChart()
 function otherChart()
 {
 	dispatch.on("change.otherChart", function(srartIndex, stopIndex) {
+//				console.log("otherChart");
+//				console.log(gamesOfSelectedTeam);
+//				console.log(gamesOfSelectedTeam[srartIndex]);
+//				console.log(gamesOfSelectedTeam[stopIndex]);
 
 	 });
 }

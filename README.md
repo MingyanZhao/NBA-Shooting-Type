@@ -1,4 +1,4 @@
-# NewNBAGo
+# NBAGo
 
 This is the refactored version of older NBAGO
 

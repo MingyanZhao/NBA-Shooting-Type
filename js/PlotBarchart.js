@@ -4,7 +4,7 @@ var brush = d3.svg.brush().x(xscale)
 		.on("brush", brushmove)
 		.on("brushend", brushend);
 
-var q = queue(1);
+
 var curDate
 var filename
 
@@ -42,6 +42,7 @@ function brushend() {
 	var brushy = d3.scale.linear().domain(xscale.range()).range(xscale.domain());
 	var curGameStart = (brush.empty()) ? 0 : Math.ceil(brushy(b[0])),
 	  curGameEnd = (brush.empty()) ? 0 : Math.floor(brushy(b[1]));
+	//console.log(curGameStart + " to " + curGameEnd);
 	
 	d3.selectAll(".PointsGotbar").style("opacity", function(d, i) {
 	  return i >= curGameStart && i <= curGameEnd || brush.empty() ? "1" : ".4";
@@ -49,8 +50,11 @@ function brushend() {
 	d3.selectAll(".PointsLossbar").style("opacity", function(d, i) {
 	  return i >= curGameStart && i <= curGameEnd || brush.empty() ? "1" : ".4";
 	});
-	  	  
+	
+	global_startGameIndex = curGameStart;
+	global_endGameIndex = curGameEnd;
 	//selectedGamesDim = transitCrossfilter.dimension(function(d){ if(d.filename)return d.filename;});
+	var q = queue(1);
 	for(i = curGameStart; i <= curGameEnd; i++)
 	{
 		curDate = changeFormat(gamesOfSelectedTeam[i].Date);
@@ -63,13 +67,14 @@ function brushend() {
 
 function updateVis()
 {
+	//console.log(arguments);
 	var d = arguments;
 	dispatch.change(d);
-
 }
 
 function clearBarChartSvg()
 {
+//		console.log("clear");
 	gameBarChartSvg.selectAll("rect").remove();
 	gameBarChartSvg.selectAll("g").remove();
 	
@@ -83,6 +88,7 @@ function drawBarChart(select, games)
 	var xpositions = new Array;
 	var minPnt = 120;
 	var maxPnt = 80;
+//		console.log(games.length);
 	games.forEach(function (d, i){ 
 		d.PTSHome = +d.PTSHome;
 		d.PTSVisitor = +d.PTSVisitor;

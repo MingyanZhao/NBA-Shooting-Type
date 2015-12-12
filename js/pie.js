@@ -1,6 +1,5 @@
 function buildPie(data) {
     clearPieChart();
-
     var svg = d3.select("body")
         .append("div")
         .attr("class", "mydiv")
@@ -46,7 +45,7 @@ function buildPie(data) {
         return d.data.name;
     };
 
-    var color = d3.scale.category20c() //d3.scale.ordinal()
+    var color =  d3.scale.category20c() //d3.scale.ordinal()
     //    .domain(["Lorem ipsum", "dolor sit", "amet", "consectetur", "adipisicing", "elit", "sed", "do", "eiusmod", "tempor", "incididunt"])
     //    .range(["#98abc5", "#8a89a6", "#7b6888", "#6b486b", "#a05d56", "#d0743c", "#ff8c00"]);
 
@@ -66,6 +65,8 @@ function buildPie(data) {
 
 
     function change(data) {
+        //console.log(data)
+		
         /* ------- PIE SLICES -------*/
         var slice = svg.select(".slices").selectAll("path.slice")
             .data(pie(data), key);
@@ -75,8 +76,13 @@ function buildPie(data) {
             .style("fill", function (d) {
                 return color(d.data.name);
             })
-            .attr("class", "slice");
-
+            .attr("class", "slice")
+			.on('mouseover', function(d, i){
+				shootingTypeFilter("NULL", "NULL", data[i].name)
+			})
+			.on("click", function(d, i){
+				typeSelectSwitch = true;
+			})
         slice
             .transition().duration(1000)
             .attrTween("d", function (d) {
@@ -87,6 +93,7 @@ function buildPie(data) {
                     return arc(interpolate(t));
                 };
             })
+
 
         slice.exit()
             .remove();

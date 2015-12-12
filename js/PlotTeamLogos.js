@@ -91,6 +91,7 @@ function drawTeamLogos()
 			
 				})
 				.on('click', function(d, i){
+					//console.log(d);
 					dispatch.chooseTeam(d.T, "2009-2010", "20091027", "20100414");
 					//clearBarChartSvg();
 					//chooseTeam(d.T, "2009-2010", "20091027", "20100414");

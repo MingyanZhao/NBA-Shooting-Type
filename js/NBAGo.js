@@ -1,5 +1,5 @@
 var containerDiv = d3.select("body")
-						.attr("class", "container")
+						.attr("class", "container col-md-12")
 						.append("div")	
 
 var leftDiv= containerDiv
@@ -15,18 +15,49 @@ var rightDiv = containerDiv
 
 var downDiv = containerDiv.append("div")
 
+
+var lineChartDiv = d3.select("body").append("div")
+						.attr("id", "lineChartDiv")
+						.attr("class", "col-md-12")
+
+
+var onepageDiv =  d3.select("body")
+						.append("div")
+						.attr("id", "onepageDiv")
+						.attr("class", "col-md-12 shootchart")
+
+
+						
+var leftpartDiv = onepageDiv.append("div")
+						.attr("id", "shootingChartDiv")
+						.attr("class", "col-md-5 col-md-offset-0 shootchart")	
+	
+	
+var	shootingChartDiv = leftpartDiv.append("div")
+						.attr("id", "shootingChartDiv")
+						.attr("class", "col-md-12")	
+
+var	pieChartDiv = leftpartDiv.append("div")
+						.attr("id", "shootingChartDiv")
+						.attr("class", "col-md-12")								
+
+
+						
+						/*
 var shootingChartDiv = d3.select("body")
 						.append("div")
-						.attr("class", "col-md-10 col-md-offset-3 shootchart")
-
+						.attr("id", "shootingChartDiv")
+						.attr("class", "col-md-12 col-md-offset-0 shootchart")
+*/
 var treeMapDiv = d3.select("body")
 		.append("div")
 		.attr("class", "col-md-10 col-md-offset-3")
 
 var transitCrossfilter = crossfilter();
-		
-var courtimgwidth = 500
-var courtimgheight = 472
+
+var courtimgwidth = 560
+var courtimgheight = 526
+
 var coordinateX = 50;
 var coordinateY = 47.2;
 
@@ -44,11 +75,15 @@ var usaMapSvg = mainDiv.append("svg")
 var tip = d3.tip()
 
 var projection = d3.geo.albersUsa()
-		//.scale(1000)
+		.scale(1000)
 		.translate([mapWidth / 2, mapHeight / 2]);
 
 var path = d3.geo.path()
 		.projection(projection);
+
+
+var mapLand;
+var mapPath;
 		
 var teamAbbreviation = new Array();
 var accuracyByTeam_Home = new Array();
@@ -62,31 +97,39 @@ var gameBarChartBaseLine = 150;
 var selectedGamesData = [];
 
 var gameBarChartSvg = downDiv
-	.attr("class", "col-md-12" )
-	.append("svg")
-	.attr("width", gameBarChartWidth)
-	.attr("height", gameBarChartHeight)	
+				.attr("id", "TypeMadeDiv")
+				.attr("class", "col-md-6" )
+				.append("svg")
+				.attr("width", gameBarChartWidth)
+				.attr("height", gameBarChartHeight)	
 
 var dispatch = d3.dispatch("start", "chooseTeam", "change");
 
 var selectedGamesDim;
 
+var shootingTypeDiv = onepageDiv.append("div")
+						.attr("id", "shootingTypeDiv")
+						.attr("class", "col-md-6")
+/*
 var shootingTypeDiv = d3.select("body")
 					.append("div")
 					.attr("class", "col-md-12")
-
+*/
 					
 var TypeMadeDiv = shootingTypeDiv
 					.append("div")
-					.attr("class", "col-md-10 col-md-offset-1")
+					.attr("id", "TypeMadeDiv")
+					.attr("class", "col-md-12")
 
 var TypeMissDiv = shootingTypeDiv
 					.append("div")
-					.attr("class", "col-md-10 col-md-offset-1")
+					.attr("id", "TypeMissDiv")
+					.attr("class", "col-md-12")
 
 var TypeAccuracyDiv = shootingTypeDiv
 					.append("div")
-					.attr("class", "col-md-10 col-md-offset-1")
+					.attr("id", "TypeAccuracyDiv")
+					.attr("class", "col-md-10")
 
 var typeSelectSwitch = false;
 					
@@ -95,8 +138,8 @@ var global_endGameIndex;
 
 dispatch.on("start.startpage", startPage);
 dispatch.on("chooseTeam", chooseTeam);
-dispatch.on("change.drawshootchart", drawshootchart);
 dispatch.on("change.drawPieAndLineCharts", drawPieAndLineCharts);
+dispatch.on("change.drawshootchart", drawshootchart);
 dispatch.on("change.slopChart", slopChart);
 dispatch.on("change.drawShootingType", drawShootingType);
 dispatch.on("change.otherChart", otherChart);
@@ -130,6 +173,7 @@ function chooseTeam(selectedteam, season, startdate, enddate)
 			}
 		})
 		drawBarChart(selectedteam, gamesOfSelectedTeam);
+		
 	})
 	return;
 }

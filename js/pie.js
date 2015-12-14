@@ -1,6 +1,8 @@
 function buildPie(data) {
     clearPieChart();
-    var svg = d3.select("body")
+    
+	//var svg = d3.select("body")
+	var svg = pieChartDiv
         .append("div")
         .attr("class", "mydiv")
         .attr({
@@ -21,8 +23,8 @@ function buildPie(data) {
     svg.append("g")
         .attr("class", "lines");
 
-    var width = 960,
-        height = 450,
+    var width = 560,
+        height = 300,
         radius = Math.min(width, height) / 2;
 
     var pie = d3.layout.pie()

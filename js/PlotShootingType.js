@@ -8,8 +8,9 @@ var resultfilter;
 var typefiler;
 var playerfilter;
 var filtered;
-var typeWidth = 1000;
+var typeWidth = 900;
 var typeHeight = 300;
+var typeBarsStartx = 50;
 var selectedPlayer;
 var selectedType;
 
@@ -171,7 +172,7 @@ function drawBars(data)
 		index++;
 	} 
 	
-    var margin = {top: 20, right: 200, bottom: 150, left: 50};
+    var margin = {top: 20, right: 250, bottom: 150, left: 50};
     var width = typeWidth - margin.left - margin.right;
     var height = typeHeight - margin.top - margin.bottom;
 		
@@ -182,11 +183,12 @@ function drawBars(data)
     var xAxis = d3.svg.axis()
         .scale(x)
         .orient("bottom")
-		.ticks(null);
+		
 
     var yAxis = d3.svg.axis()
         .scale(y)
-        .orient("left");
+		.orient("left")
+		.ticks(0);
 
 	
 	/*
@@ -194,7 +196,7 @@ function drawBars(data)
 		.rangeRoundBands([0, width],0.05);
 	*/
 	x.domain(typeForDomain)
-		.rangeRoundBands([0, width],0.05);	
+		.rangeRoundBands([0, width], 0.08);	
 
 	y.domain(d3.extent(typeForDomain, function (d) {    
 		return types[d].made;
@@ -213,9 +215,9 @@ function drawBars(data)
 
 	typeMadeSvg.append("g")
         .attr("class", "x axis")
-        .attr("transform", "translate(0," + height + ")")
+        .attr("transform", "translate(" + typeBarsStartx + "," + height + ")")
         .call(xAxis)
-		  .selectAll("text")
+	  .selectAll("text")
 			.attr("y", 0)
 			.attr("x", 9)
 			.attr("dy", ".35em")
@@ -224,15 +226,17 @@ function drawBars(data)
 
 	typeMadeSvg.append("g")
         .attr("class", "y axis")
+		.attr("transform", "translate(" + typeBarsStartx + "," + 0 + ")")
         .call(yAxis)
-        .append("text")
+		/*
+ 		.append("text")
         .attr("transform", "rotate(-90)")
         .attr("y", 0 - margin.left - 2)
-        .attr("x", 0 - (height / 2))
+        .attr("x", 100) //0 - (height / 2))
         .attr("dy", "1em")
         .style("text-anchor", "middle")
         .text("type");
-
+		*/
 		
 	typeMadeSvg.selectAll("rect")
 			.data(typeForDomain)
@@ -240,7 +244,7 @@ function drawBars(data)
 				.append("rect")
 				.attr("width", x.rangeBand())
 				.attr("height", function(d,i) {if(y(types[d].made) < 0) console.log("  1  " + i) ;return y(types[d].made)})
-				.attr("transform", function (d, i) {return "translate(" + x(d) +"," + (height - y(types[d].made)) + ")"})
+				.attr("transform", function (d, i) {return "translate(" +(x(d) + typeBarsStartx) +"," + (height - y(types[d].made)) + ")"})
 				.attr("fill", "green")
 
 				
@@ -254,7 +258,7 @@ function drawBars(data)
 				
 	typeMissSvg.append("g")
         .attr("class", "x axis")
-        .attr("transform", "translate(0," + height + ")")
+        .attr("transform", "translate(" +typeBarsStartx + "," + height + ")")
         .call(xAxis)
 		  .selectAll("text")
 			.attr("y", 0)
@@ -265,7 +269,9 @@ function drawBars(data)
 
 	typeMissSvg.append("g")
         .attr("class", "y axis")
+		.attr("transform", "translate(" + typeBarsStartx + "," + 0 + ")")
         .call(yAxis)
+		/*
         .append("text")
         .attr("transform", "rotate(-90)")
         .attr("y", 0 - margin.left - 2)
@@ -273,6 +279,7 @@ function drawBars(data)
         .attr("dy", "1em")
         .style("text-anchor", "middle")
         .text("type");
+		*/
 
 		
 	typeMissSvg.selectAll("rect")
@@ -281,9 +288,8 @@ function drawBars(data)
 				.append("rect")
 				.attr("width", x.rangeBand())
 				.attr("height", function(d,i) {if(y(types[d].miss) < 0) console.log(" 2  " + types[d].miss); return y(types[d].miss)})
-				.attr("transform", function (d, i) {return "translate(" + x(d) +"," + (height - y(types[d].miss)) + ")"})
-				.attr("fill", "green")			
-
+				.attr("transform", function (d, i) {return "translate(" + (x(d) + typeBarsStartx) +"," + (height - y(types[d].miss)) + ")"})
+				.attr("fill", "red")			
 	
 	var yAccuracyScale = d3.scale.linear()
 					.domain([0,1])
@@ -294,7 +300,7 @@ function drawBars(data)
 				
 	typeAccuracySvg.append("g")
         .attr("class", "x axis")
-        .attr("transform", "translate(0," + height + ")")
+        .attr("transform", "translate(50," + height + ")")
         .call(xAxis)
 		  .selectAll("text")
 			.attr("y", 0)
@@ -305,7 +311,9 @@ function drawBars(data)
 
 	typeAccuracySvg.append("g")
         .attr("class", "y axis")
+		.attr("transform", "translate(" + typeBarsStartx + "," + 0 + ")")
         .call(yAxis)
+		/*
         .append("text")
         .attr("transform", "rotate(-90)")
         .attr("y", 0 - margin.left - 2)
@@ -313,7 +321,7 @@ function drawBars(data)
         .attr("dy", "1em")
         .style("text-anchor", "middle")
         .text("type");
-
+		*/
 		
 	typeAccuracySvg.selectAll("rect")
 			.data(typeForDomain)
@@ -324,9 +332,9 @@ function drawBars(data)
 						if(yAccuracyScale(types[d].made / (types[d].made + types[d].miss)) < 0) console.log(" 3  ")
 						return yAccuracyScale(types[d].made / (types[d].made + types[d].miss));
 					})
-				.attr("transform", function (d, i) {return "translate(" + x(d) +
+				.attr("transform", function (d, i) {return "translate(" + (x(d) + typeBarsStartx)+
 					"," + (height - yAccuracyScale(types[d].made / (types[d].made + types[d].miss))) + ")"})
-				.attr("fill", "green")			
+				.attr("fill", "#6699ff")			
 			
 		
 		shootingTypeDiv.selectAll("rect")

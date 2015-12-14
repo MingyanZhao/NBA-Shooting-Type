@@ -91,10 +91,25 @@ function drawTeamLogos()
 			
 				})
 				.on('click', function(d, i){
-					//console.log(d);
+					
+					usaMapSvg.transition()
+								.duration(500)
+								//.attr("width", mapWidth / 2)
+								.attr("height", 0)
+					/*
+					usaMapSvg.selectAll()
+						.transition()
+						.duration(500)
+						.attr("oppacity", 0);
+					mapLand.transition()
+						.duration(500)
+						.attr("oppacity", 0);
+					
+					mapPath.transition()
+						.duration(500)
+						.attr("oppacity", 0);
+					*/
 					dispatch.chooseTeam(d.T, "2009-2010", "20091027", "20100414");
-					//clearBarChartSvg();
-					//chooseTeam(d.T, "2009-2010", "20091027", "20100414");
 				})
 		})		
 		return true;

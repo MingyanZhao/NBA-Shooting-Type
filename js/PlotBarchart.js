@@ -54,6 +54,22 @@ function brushend() {
 	global_startGameIndex = curGameStart;
 	global_endGameIndex = curGameEnd;
 	//selectedGamesDim = transitCrossfilter.dimension(function(d){ if(d.filename)return d.filename;});
+	
+	gameBarChartSvg
+			.transition()
+			.duration(500)
+			.attr("width", gameBarChartWidth)
+			.attr("height", 50)	
+	
+	yscale.range([0, gameBarChartBaseLine / 2])
+	
+	gameBarChartSvg.selectAll("rect")
+			.transition()
+			.duration(500)
+			.attr("fill", "#cc0000")
+			.attr("height", 50)
+			.attr("y", 0)
+	
 	var q = queue(1);
 	for(i = curGameStart; i <= curGameEnd; i++)
 	{
@@ -88,7 +104,7 @@ function drawBarChart(select, games)
 	var xpositions = new Array;
 	var minPnt = 120;
 	var maxPnt = 80;
-//		console.log(games.length);
+		console.log(select);
 	games.forEach(function (d, i){ 
 		d.PTSHome = +d.PTSHome;
 		d.PTSVisitor = +d.PTSVisitor;
